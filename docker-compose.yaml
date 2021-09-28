@@ -1,4 +1,4 @@
-version: "3"
+version: "3.7"
 #fixme  Clone openIM Server project before using docker-compose,project address：https://github.com/OpenIMSDK/Open-IM-Server.git
 
 services:
@@ -42,29 +42,63 @@ services:
     command: redis-server --requirepass openIM --appendonly yes
 
 
+#  zookeeper:
+#    image: wurstmeister/zookeeper
+#    ports:
+#      - 2181:2181
+#    container_name: zookeeper
+#    volumes:
+#      - /etc/localtime:/etc/localtime
+#    environment:
+#      TZ: Asia/Shanghai
+#    restart: always
+
+
+#  kafka:
+#    image: wurstmeister/kafka
+#    container_name: kafka
+#    restart: always
+#    environment:
+#      TZ: Asia/Shanghai
+#      KAFKA_BROKER_ID: 0
+#      KAFKA_ZOOKEEPER_CONNECT: 127.0.0.1:2181
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+#      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+#    network_mode: "host"
+#    depends_on:
+#      - zookeeper
+#
   zookeeper:
     image: wurstmeister/zookeeper
-    ports:
-      - 2181:2181
     container_name: zookeeper
+    restart: always
     volumes:
       - /etc/localtime:/etc/localtime
     environment:
       TZ: Asia/Shanghai
-    restart: always
-
+    ports:
+      - 2181:2181
 
   kafka:
     image: wurstmeister/kafka
     container_name: kafka
     restart: always
+    ports:
+      - 9092:9092
     environment:
       TZ: Asia/Shanghai
       KAFKA_BROKER_ID: 0
-      KAFKA_ZOOKEEPER_CONNECT: 127.0.0.1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      #KAFKA_ADVERTISED_HOST_NAME: 182.92.234.23
+      #KAFKA_CREATE_TOPICS: "test:2:0"   #kafka启动后初始化一个有2个partition(分区)0个副本名叫test的topic
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-    network_mode: "host"
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms128M"
+    #network_mode: "host" #ERROR: for kafka  "host" network_mode is incompatible with port_bindings
+    #host：使用宿主机网络接口功能与port映射同时使用，逻辑比较容易理解，本身已经使用了本地网络，所有端口是与宿主机同步，再作端口映射是本机映射到本机，脱了裤子放屁，多此一举。
+    #network_mode: "host"
+    volumes:
+      - ./kafka-logs:/kafka
     depends_on:
       - zookeeper
 
@@ -105,22 +139,22 @@ services:
   #        - etcd
 
   #fixme----build from docker hub------
-  open-im-server:
-    image: lyt1123/open_im_server
-    container_name: open-im-server
-    volumes:
-      - ./logs:/Open-IM-Server/logs
-      - ./config/config.yaml:/Open-IM-Server/config/config.yaml
-    restart: always
-    depends_on:
-      - kafka
-      - mysql
-      - mongodb
-      - redis
-      - etcd
-    network_mode: "host"
-    logging:
-      driver: json-file
-      options:
-        max-size: "1g"
-        max-file: "2"
+#  open-im-server:
+#    image: lyt1123/open_im_server
+#    container_name: open-im-server
+#    volumes:
+#      - ./logs:/Open-IM-Server/logs
+#      - ./config/config.yaml:/Open-IM-Server/config/config.yaml
+#    restart: always
+#    depends_on:
+#      - kafka
+#      - mysql
+#      - mongodb
+#      - redis
+#      - etcd
+#    network_mode: "host"
+#    logging:
+#      driver: json-file
+#      options:
+#        max-size: "1g"
+#        max-file: "2"
