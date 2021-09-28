@@ -6,8 +6,6 @@ import (
 	"github.com/Shopify/sarama"
 )
 
-var Topic = "web_log" //主题名称
-
 // 基于sarama第三方库开发的kafka client
 func main() {
 	config := sarama.NewConfig()

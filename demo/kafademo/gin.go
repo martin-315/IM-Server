@@ -8,7 +8,6 @@ import (
 	"time"
 )
 
-var Topic = "web_log" //主题名称
 var kafkaIp = "127.0.0.1:9092"
 
 func Test(ctx *gin.Context) {
