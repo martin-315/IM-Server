@@ -90,7 +90,7 @@ services:
       KAFKA_BROKER_ID: 0
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
       #KAFKA_ADVERTISED_HOST_NAME: 182.92.234.23
-      #KAFKA_CREATE_TOPICS: "test:2:0"   #kafka启动后初始化一个有2个partition(分区)0个副本名叫test的topic
+      KAFKA_CREATE_TOPICS: "test:2:0"   #kafka启动后初始化一个有2个partition(分区)0个副本名叫test的topic
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_HEAP_OPTS: "-Xmx256M -Xms128M"

@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	rpcPort := flag.Int("port", 10200, "get RpcFriendPort from cmd,default 12000 as port")
+	rpcPort := flag.Int("port", 10300, "get RpcFriendPort from cmd,default 12000 as port")
 	flag.Parse()
 	rpcServer := friend.NewFriendServer(*rpcPort)
 	rpcServer.Run()
