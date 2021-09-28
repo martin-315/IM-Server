@@ -2,6 +2,7 @@ package db
 
 import (
 	"Open_IM/src/common/config"
+	"Open_IM/src/common/log"
 	"github.com/garyburd/redigo/redis"
 	"gopkg.in/mgo.v2"
 	"time"
@@ -35,6 +36,7 @@ func init() {
 	}
 	mgoSession, err := mgo.DialWithInfo(mgoDailInfo)
 	if err != nil {
+		log.Error("", "", err.Error())
 		panic(err)
 	}
 	DB.mgoSession = mgoSession

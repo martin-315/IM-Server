@@ -146,7 +146,7 @@ type config struct {
 }
 
 func init() {
-	bytes, err := ioutil.ReadFile("../config/config.yaml")
+	bytes, err := ioutil.ReadFile("./config/config.yaml") //根目录执行路径
 	if err != nil {
 		panic(err)
 		return
