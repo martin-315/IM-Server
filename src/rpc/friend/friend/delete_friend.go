@@ -17,11 +17,13 @@ func (s *friendServer) DeleteFriend(ctx context.Context, req *pbFriend.DeleteFri
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.CommonResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	err = im_mysql_model.DeleteSingleFriendInfo(claims.UID, req.Uid)
 	if err != nil {
 		log.Error(req.Token, req.OperationID, "err=%s,delete friend failed", err.Error())
 		return &pbFriend.CommonResp{ErrorCode: config.ErrMysql.ErrCode, ErrorMsg: config.ErrMysql.ErrMsg}, nil
 	}
+
 	log.Info(req.Token, req.OperationID, "rpc delete friend success return")
 	return &pbFriend.CommonResp{}, nil
 }

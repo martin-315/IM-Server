@@ -20,12 +20,14 @@ func (s *friendServer) GetFriendApplyList(ctx context.Context, req *pbFriend.Get
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.GetFriendApplyResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	//	Find the  current user friend applications received
 	ApplyUsersInfo, err := im_mysql_model.FindFriendsApplyFromFriendReq(claims.UID)
 	if err != nil {
 		log.Error(req.Token, req.OperationID, "err=%s,search applyInfo failed", err.Error())
 		return &pbFriend.GetFriendApplyResp{ErrorCode: config.ErrMysql.ErrCode, ErrorMsg: config.ErrMysql.ErrMsg}, nil
 	}
+
 	for _, applyUserInfo := range ApplyUsersInfo {
 		var userInfo pbFriend.ApplyUserInfo
 		//Find friend application status
@@ -38,6 +40,7 @@ func (s *friendServer) GetFriendApplyList(ctx context.Context, req *pbFriend.Get
 			log.Error(req.Token, req.OperationID, "err=%s,search userInfo failed", err.Error())
 			continue
 		}
+
 		userInfo.Uid = us.UID
 		userInfo.Icon = us.Icon
 		userInfo.Name = us.Name
@@ -62,12 +65,14 @@ func (s *friendServer) GetSelfApplyList(ctx context.Context, req *pbFriend.GetFr
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.GetFriendApplyResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	//	Find the self add other userinfo
 	usersInfo, err := im_mysql_model.FindSelfApplyFromFriendReq(claims.UID)
 	if err != nil {
 		log.Error(req.Token, req.OperationID, "err=%s,search self to other user Info failed", err.Error())
 		return &pbFriend.GetFriendApplyResp{ErrorCode: config.ErrMysql.ErrCode, ErrorMsg: config.ErrMysql.ErrMsg}, nil
 	}
+
 	for _, selfApplyOtherUserInfo := range usersInfo {
 		var userInfo pbFriend.ApplyUserInfo
 		//Find friend application status
@@ -80,6 +85,7 @@ func (s *friendServer) GetSelfApplyList(ctx context.Context, req *pbFriend.GetFr
 			log.Error(req.Token, req.OperationID, "err=%s,search userInfo failed", err.Error())
 			continue
 		}
+
 		userInfo.Uid = us.UID
 		userInfo.Icon = us.Icon
 		userInfo.Name = us.Name

@@ -21,6 +21,7 @@ func (s *friendServer) AddFriendResponse(ctx context.Context, req *pbFriend.AddF
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.CommonResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	//Check there application before agreeing or refuse to a friend's application
 	if _, err = im_mysql_model.FindFriendApplyFromFriendReqByUid(req.Uid, claims.UID); err != nil {
 		log.Error(req.Token, req.OperationID, "No such application record")
@@ -32,6 +33,7 @@ func (s *friendServer) AddFriendResponse(ctx context.Context, req *pbFriend.AddF
 		log.Error(req.Token, req.OperationID, "err=%s,update friend request table failed", err.Error())
 		return &pbFriend.CommonResp{ErrorCode: config.ErrMysql.ErrCode, ErrorMsg: config.ErrAgreeToAddFriend.ErrMsg}, nil
 	}
+
 	log.Info(req.Token, req.OperationID, "rpc add friend response success return,userid=%s,flag=%d", req.Uid, req.Flag)
 	//Change the status of the friend request form
 	if req.Flag == constant.FriendFlag {
@@ -46,10 +48,12 @@ func (s *friendServer) AddFriendResponse(ctx context.Context, req *pbFriend.AddF
 		if err != nil {
 			log.Error(req.Token, req.OperationID, "err=%s,create friendship failed", err.Error())
 		}
+
 		err = im_mysql_model.InsertToFriend(req.Uid, claims.UID, req.Flag)
 		if err != nil {
 			log.Error(req.Token, req.OperationID, "err=%s,create friendship failed", err.Error())
 		}
+
 		//Push message when establish friends successfully
 		//senderInfo, errSend := im_mysql_model.FindUserByUID(claims.UID)
 		//if errSend == nil {

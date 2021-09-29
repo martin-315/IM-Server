@@ -21,11 +21,13 @@ func (s *friendServer) GetBlacklist(ctx context.Context, req *pbFriend.GetBlackl
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.GetBlacklistResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	blackListInfo, err := im_mysql_model.GetBlackListByUID(claims.UID)
 	if err != nil {
 		log.Error(req.Token, req.OperationID, "err=%s get blacklist failed", err.Error())
 		return &pbFriend.GetBlacklistResp{ErrorCode: config.ErrGetBlackList.ErrCode, ErrorMsg: config.ErrGetBlackList.ErrMsg}, nil
 	}
+
 	for _, blackUser := range blackListInfo {
 		var blackUserInfo pbFriend.UserInfo
 		//Find black user information
@@ -34,10 +36,12 @@ func (s *friendServer) GetBlacklist(ctx context.Context, req *pbFriend.GetBlackl
 			log.Error(req.Token, req.OperationID, "err=%s search black list userInfo failed", err.Error())
 			continue
 		}
+
 		friendShip, err := im_mysql_model.FindFriendRelationshipFromFriend(claims.UID, blackUser.BlockId)
 		if err == nil {
 			comment = friendShip.Comment
 		}
+
 		blackUserInfo.Uid = us.UID
 		blackUserInfo.Icon = us.Icon
 		blackUserInfo.Name = us.Name

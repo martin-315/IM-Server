@@ -19,11 +19,13 @@ func (s *friendServer) GetFriendList(ctx context.Context, req *pbFriend.GetFrien
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.GetFriendListResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	friends, err := im_mysql_model.FindUserInfoFromFriend(claims.UID)
 	if err != nil {
 		log.Error(req.Token, req.OperationID, "err=%s search friendInfo failed", err.Error())
 		return &pbFriend.GetFriendListResp{ErrorCode: config.ErrSearchUserInfo.ErrCode, ErrorMsg: config.ErrSearchUserInfo.ErrMsg}, nil
 	}
+
 	for _, friendUser := range friends {
 		var friendUserInfo pbFriend.UserInfo
 
@@ -34,12 +36,14 @@ func (s *friendServer) GetFriendList(ctx context.Context, req *pbFriend.GetFrien
 		} else {
 			friendUserInfo.IsInBlackList = 0
 		}
+
 		//Find user information
 		us, err := im_mysql_model.FindUserByUID(friendUser.FriendId)
 		if err != nil {
 			log.Error(req.Token, req.OperationID, "err=%s search userInfo failed", err.Error())
 			continue
 		}
+
 		friendUserInfo.Uid = friendUser.FriendId
 		friendUserInfo.Comment = friendUser.Comment
 		friendUserInfo.Icon = us.Icon

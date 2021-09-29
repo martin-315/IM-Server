@@ -45,7 +45,7 @@ func TencentCloudStorageCredential(c *gin.Context) {
 		nil,
 	)
 	log2.Info(c.Request.Header.Get("token"), c.PostForm("optionID"), "api TencentUpLoadCredential sts.NewClient cli = %v", cli)
-
+	//https://cloud.tencent.com/document/product/436/8282
 	opt := &sts.CredentialOptions{
 		DurationSeconds: int64(time.Hour.Seconds()),
 		Region:          config.Config.Credential.Tencent.Region,
@@ -62,6 +62,7 @@ func TencentCloudStorageCredential(c *gin.Context) {
 					},
 				},
 			},
+			//Version:gin.Version,
 		},
 	}
 	log2.Info(c.Request.Header.Get("token"), c.PostForm("optionID"), "api TencentUpLoadCredential sts.CredentialOptions opt = %v", opt)

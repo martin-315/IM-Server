@@ -69,7 +69,7 @@ func (s *friendServer) GetFriendsInfo(ctx context.Context, req *pbFriend.GetFrie
 		isFriend      int32
 		comment       string
 	)
-	//Parse token, to find current user information
+	//Parse token, to find current user information //解析token，查找当前用户信息
 	claims, err := utils.ParseToken(req.Token)
 	if err != nil {
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())

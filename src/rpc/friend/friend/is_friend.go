@@ -19,6 +19,7 @@ func (s *friendServer) IsFriend(ctx context.Context, req *pbFriend.IsFriendReq) 
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.IsFriendResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	_, err = im_mysql_model.FindFriendRelationshipFromFriend(claims.UID, req.ReceiveUid)
 	if err == nil {
 		isFriend = constant.FriendFlag

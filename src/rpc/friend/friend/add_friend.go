@@ -21,6 +21,7 @@ func (s *friendServer) AddFriend(ctx context.Context, req *pbFriend.AddFriendReq
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.CommonResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	//Cannot add non-existent users
 	if _, err = im_mysql_model.FindUserByUID(req.Uid); err != nil {
 		log.Error(req.Token, req.OperationID, "this user not exists,cant not add friend")
@@ -83,10 +84,12 @@ func (s *friendServer) ImportFriend(ctx context.Context, req *pbFriend.ImportFri
 					resp.FailedUidList = append(resp.FailedUidList, v)
 					log.Error(req.Token, req.OperationID, "err=%s,create friendship failed", err.Error())
 				}
+
 				err2 := im_mysql_model.InsertToFriend(v, req.OwnerUid, 1)
 				if err2 != nil {
 					log.Error(req.Token, req.OperationID, "err=%s,create friendship failed", err.Error())
 				}
+
 				if err1 == nil && err2 == nil {
 					var name, faceUrl string
 					n := content_struct.NotificationContent{1, constant.FriendAcceptTip, ""}

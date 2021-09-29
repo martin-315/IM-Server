@@ -31,6 +31,7 @@ func (s *friendServer) AddBlacklist(ctx context.Context, req *pbFriend.AddBlackl
 			log.Error(req.Token, req.OperationID, "err=%s,Failed to add blacklist", err.Error())
 			return &pbFriend.CommonResp{ErrorCode: config.ErrMysql.ErrCode, ErrorMsg: config.ErrMysql.ErrMsg}, nil
 		}
+
 		log.Info(req.Token, req.OperationID, "rpc add blacklist success return,uid=%s", req.Uid)
 		return &pbFriend.CommonResp{}, nil
 	}
@@ -40,6 +41,7 @@ func (s *friendServer) AddBlacklist(ctx context.Context, req *pbFriend.AddBlackl
 		log.Error(req.Token, req.OperationID, "err=%s,Failed to add blacklist", err.Error())
 		return &pbFriend.CommonResp{ErrorCode: config.ErrMysql.ErrCode, ErrorMsg: config.ErrMysql.ErrMsg}, nil
 	}
+
 	log.Info(req.Token, req.OperationID, "rpc add blacklist success return,uid=%s", req.Uid)
 	return &pbFriend.CommonResp{}, nil
 }
