@@ -39,10 +39,10 @@ func (s *friendServer) AddFriendResponse(ctx context.Context, req *pbFriend.AddF
 	if req.Flag == constant.FriendFlag {
 		//Establish friendship after find friend relationship not exists
 		_, err := im_mysql_model.FindFriendRelationshipFromFriend(claims.UID, req.Uid)
-		//fixme If there is an error, it means that there is no friend record or database err, if no friend record should be inserted,Continue down execution
 		if err != nil {
 			log.Error("", req.OperationID, err.Error())
 		}
+		//fixme If there is an error, it means that there is no friend record or database err, if no friend record should be inserted,Continue down execution
 		//Establish two single friendship
 		err = im_mysql_model.InsertToFriend(claims.UID, req.Uid, req.Flag)
 		if err != nil {

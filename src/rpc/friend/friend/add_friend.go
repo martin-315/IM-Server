@@ -17,10 +17,6 @@ func (s *friendServer) AddFriend(ctx context.Context, req *pbFriend.AddFriendReq
 	log.Info(req.Token, req.OperationID, "rpc add friend is server,userid=%s", req.Uid)
 	//Parse token, to find current user information
 	claims, err := utils.ParseToken(req.Token)
-	if err != nil {
-		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
-		return &pbFriend.CommonResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
-	}
 
 	//Cannot add non-existent users
 	if _, err = im_mysql_model.FindUserByUID(req.Uid); err != nil {
@@ -34,6 +30,7 @@ func (s *friendServer) AddFriend(ctx context.Context, req *pbFriend.AddFriendReq
 		log.Error(req.Token, req.OperationID, "err=%s,create friend request record failed", err.Error())
 		return &pbFriend.CommonResp{ErrorCode: config.ErrAddFriend.ErrCode, ErrorMsg: config.ErrAddFriend.ErrMsg}, nil
 	}
+
 	log.Info(req.Token, req.OperationID, "rpc add friend  is success return,uid=%s", req.Uid)
 	//Push message when add friend successfully
 	senderInfo, errSend := im_mysql_model.FindUserByUID(claims.UID)
@@ -97,6 +94,7 @@ func (s *friendServer) ImportFriend(ctx context.Context, req *pbFriend.ImportFri
 					if err != nil {
 						log.ErrorByKv("get  info failed", req.OperationID, "err", err.Error(), "req", req.String())
 					}
+
 					if r != nil {
 						name, faceUrl = r.Name, r.Icon
 					}

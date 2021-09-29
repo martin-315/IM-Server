@@ -43,6 +43,7 @@ func (s *friendServer) Run() {
 		log.InfoByArgs(fmt.Sprintf("Failed to listen rpc friend network,err=%s", err.Error()))
 		return
 	}
+
 	log.Info("", "", "listen network success, address = %s", registerAddress)
 	defer listener.Close()
 	//grpc server
@@ -55,6 +56,7 @@ func (s *friendServer) Run() {
 		log.ErrorByArgs("register rpc fiend service to etcd failed,err=%s", err.Error())
 		return
 	}
+
 	err = srv.Serve(listener)
 	if err != nil {
 		log.ErrorByArgs("listen rpc friend error,err=%s", err.Error())
@@ -75,20 +77,24 @@ func (s *friendServer) GetFriendsInfo(ctx context.Context, req *pbFriend.GetFrie
 		log.Error(req.Token, req.OperationID, "err=%s,parse token failed", err.Error())
 		return &pbFriend.GetFriendInfoResp{ErrorCode: config.ErrParseToken.ErrCode, ErrorMsg: config.ErrParseToken.ErrMsg}, nil
 	}
+
 	friendShip, err := im_mysql_model.FindFriendRelationshipFromFriend(claims.UID, req.Uid)
 	if err == nil {
 		isFriend = constant.FriendFlag
 		comment = friendShip.Comment
 	}
+
 	friendUserInfo, err := im_mysql_model.FindUserByUID(req.Uid)
 	if err != nil {
 		log.Error(req.Token, req.OperationID, "err=%s,no this user", err.Error())
 		return &pbFriend.GetFriendInfoResp{ErrorCode: config.ErrSearchUserInfo.ErrCode, ErrorMsg: config.ErrSearchUserInfo.ErrMsg}, nil
 	}
+
 	err = im_mysql_model.FindRelationshipFromBlackList(claims.UID, req.Uid)
 	if err == nil {
 		isInBlackList = constant.BlackListFlag
 	}
+
 	log.Info(req.Token, req.OperationID, "rpc search friend success return")
 	return &pbFriend.GetFriendInfoResp{
 		ErrorCode: 0,

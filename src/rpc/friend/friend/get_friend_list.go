@@ -36,7 +36,6 @@ func (s *friendServer) GetFriendList(ctx context.Context, req *pbFriend.GetFrien
 		} else {
 			friendUserInfo.IsInBlackList = 0
 		}
-
 		//Find user information
 		us, err := im_mysql_model.FindUserByUID(friendUser.FriendId)
 		if err != nil {

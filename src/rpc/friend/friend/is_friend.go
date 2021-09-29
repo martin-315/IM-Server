@@ -26,6 +26,7 @@ func (s *friendServer) IsFriend(ctx context.Context, req *pbFriend.IsFriendReq) 
 	} else {
 		isFriend = constant.ApplicationFriendFlag
 	}
+
 	log.InfoByArgs(fmt.Sprintf("rpc is friend success return"))
 	return &pbFriend.IsFriendResp{ShipType: isFriend}, nil
 }
